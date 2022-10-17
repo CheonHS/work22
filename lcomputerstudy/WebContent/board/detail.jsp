@@ -45,6 +45,7 @@
 		vertical-align: middle;
 	}
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 </head>
 <body>
 <h1 align="center">글 상세</h1>
@@ -70,61 +71,62 @@
 <div class="mainDiv" align="center" style="vertical-align: top; ">
 	<b>댓글 작성</b>
 	<form name="commentInsert" action="comment-insert.do" method="post">
-		<input type="hidden" name="b_idx" value="${board.b_idx}">
-		<input type="hidden" name="u_idx" value="${sessionScope.user.u_idx}">
-		<textarea name="c_content" style="width: 800px; height: 50px;"></textarea>
-		<input type="submit" value="등록" style="height: 50px;">
+		<input type="hidden" id="bIdxForm"  name="b_idx" value="${board.b_idx}">
+		<input type="hidden" id="uIdxForm" name="u_idx" value="${sessionScope.user.u_idx}">
+		<textarea id="contentForm" name="c_content" style="width: 800px; height: 50px;"></textarea>
+		<input type="button" id="btnCommentWrite" value="등록" style="height: 50px;">
 	</form>
 	<c:if test="${empty commentlist}"><br><b>댓글이 없습니다</b></c:if>
 	<c:if test="${not empty commentlist}"><br><b>댓글 목록</b></c:if>
-	<c:forEach items="${commentlist}" var="c">
-		<div align="left" style="margin-left: 30px;">
-			<c:if test="${c.c_depth ne 0 }">
-				<c:forEach var="var" begin="1" end="${c.c_depth}" step="1">└</c:forEach>
-			</c:if>
-			<b>${c.user.u_name}</b> / 
-			<small><fmt:formatDate value="${c.c_date}" pattern="yyyy-MM-dd HH-mm-ss" type="date"/></small>
-		</div>
-		<div>
-			<c:choose>
-			<c:when test="${sessionScope.user.u_idx eq c.user.u_idx}">
-				<div>
-					<textarea readonly style="width: 700px; height: 50px">${c.c_content}</textarea>
-					<input type="button" value="답글" style="height: 50px;"
-						id="cReplyButton${c.c_idx}" onclick="cReply(${c.c_idx})">
-					<input type="button" value="수정" style="height: 50px;"
-						id="cEditButton${c.c_idx}" onclick="cEdit(${c.c_idx})">
-					<input type="button" value="삭제" style="height: 50px;"
-						onclick="location.href='/lcomputerstudy/comment-delete.do?c_idx=${c.c_idx}&&b_idx=${c.b_idx}'">
-				</div>
-				<div id="cReplyDiv${c.c_idx}" style="margin-left:30px; display: none;">
-					<form name="commentReply${c.c_idx}" action="comment-reply.do" method="post">
-						<input type="hidden" name="b_idx" value="${c.b_idx}">
-						<input type="hidden" name="u_idx" value="${sessionScope.user.u_idx}">
-						<input type="hidden" name="c_group" value="${c.c_group }">
-						<input type="hidden" name="c_order" value="${c.c_order }">
-						<input type="hidden" name="c_depth" value="${c.c_depth }">
-						<textarea name="c_content" style="width: 750px; height: 50px;"></textarea>
-						<input type="submit" value="답글등록" style="height: 50px;">
-					</form>
-				</div>
-				<div id="cEditDiv${c.c_idx}" style="margin-left:30px; display: none;">
-					<form name="commentReply${c.c_idx}" action="comment-edit.do" method="post">
-						<input type="hidden" name="c_idx" value="${c.c_idx}">
-						<input type="hidden" name="b_idx" value="${c.b_idx}">
-						<textarea name="c_content" style="width: 750px; height: 50px;"></textarea>
-						<input type="submit" value="답글수정" style="height: 50px;">
-					</form>
-				</div>
-			</c:when>
-			<c:when test="${sessionScope.user.u_idx ne c.user.u_idx}">
-				<div>
-					<textarea readonly style="width: 800px; height: 50px">${c.c_content}</textarea>
-				</div>
-			</c:when>
-			</c:choose>
-		</div>
-	</c:forEach>
+	<div id=commentList>
+		<c:forEach items="${commentlist}" var="c">
+	<div align="left" style="margin-left: 30px;">
+		<c:if test="${c.c_depth ne 0 }">
+			<c:forEach var="var" begin="1" end="${c.c_depth}" step="1">└</c:forEach>
+		</c:if>
+		<b>${c.user.u_name}</b> / 
+		<small><fmt:formatDate value="${c.c_date}" pattern="yyyy-MM-dd HH-mm-ss" type="date"/></small>
+	</div>
+	<div>
+		<c:choose>
+		<c:when test="${sessionScope.user.u_idx eq c.user.u_idx}">
+			<div>
+				<textarea readonly style="width: 700px; height: 50px">${c.c_content}</textarea>
+				<input type="button" value="답글" style="height: 50px;" class="btnReply" cidx="${c.c_idx}">
+				<input type="button" value="수정" style="height: 50px;"
+					id="cEditButton${c.c_idx}" onclick="cEdit(${c.c_idx})">
+				<input type="button" value="삭제" style="height: 50px;"
+					onclick="location.href='/lcomputerstudy/comment-delete.do?c_idx=${c.c_idx}&&b_idx=${c.b_idx}'">
+			</div>
+			<div id="cReplyDiv${c.c_idx}" style="margin-left:30px; display: none;">
+				<form name="commentReply${c.c_idx}" action="comment-reply.do" method="post">
+					<input type="hidden" name="b_idx" value="${c.b_idx}">
+					<input type="hidden" name="u_idx" value="${sessionScope.user.u_idx}">
+					<input type="hidden" name="c_group" value="${c.c_group }">
+					<input type="hidden" name="c_order" value="${c.c_order }">
+					<input type="hidden" name="c_depth" value="${c.c_depth }">
+					<textarea name="c_content" style="width: 750px; height: 50px;"></textarea>
+					<input type="submit" value="답글등록" style="height: 50px;">
+				</form>
+			</div>
+			<div id="cEditDiv${c.c_idx}" style="margin-left:30px; display: none;">
+				<form name="commentReply${c.c_idx}" action="comment-edit.do" method="post">
+					<input type="hidden" name="c_idx" value="${c.c_idx}">
+					<input type="hidden" name="b_idx" value="${c.b_idx}">
+					<textarea name="c_content" style="width: 750px; height: 50px;"></textarea>
+					<input type="submit" value="답글수정" style="height: 50px;">
+				</form>
+			</div>
+		</c:when>
+		<c:when test="${sessionScope.user.u_idx ne c.user.u_idx}">
+			<div>
+				<textarea readonly style="width: 800px; height: 50px">${c.c_content}</textarea>
+			</div>
+		</c:when>
+		</c:choose>
+	</div>
+</c:forEach>
+	</div>
 </div>
 <br>
 <div class="mainDiv" align="right">
@@ -161,5 +163,31 @@
 		    document.getElementById(b).value = '취소';
 		  }
 	}
+
+	$(document).on('click', '#btnCommentWrite', function () {
+		let content = $('#contentForm').val();
+		let bIdx = '${board.b_idx}';
+		let uIdx = '${sessionScope.user.u_idx}';
+		console.log(content);
+		console.log(bIdx);
+		console.log(uIdx);
+
+		$.ajax({
+			  method: "POST",
+			  url: "aj-insert-comment.do",
+			  data: { b_idx: bIdx, u_idx: uIdx, c_content: content }
+		})
+		.done(function( msg ) {
+		    $('#commentList').html(msg);
+		});
+
+		
+	});
+
+	$(document).on('click', '.btnReply', function () {
+		let c_idx = $(this).attr('cidx');
+		console.log(c_idx);
+		$(this).parent().next().css('display', '');
+	});
 </script>
 </html>

@@ -327,7 +327,39 @@ public class Controller extends HttpServlet {
 				view = "board/comment-result";
 				request.setAttribute("comment", comment);
 				break;
-			
+			case "/aj-insert-comment.do":
+				comment = new Comment();
+				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				comment.setC_content(request.getParameter("c_content"));
+				user = new User();
+				user.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
+				comment.setUser(user);
+				
+				boardService = BoardService.getInstance();
+				boardService.commentInsert(comment);
+				
+				board = new Board();
+				board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				board = boardService.detailBoard(board);
+				userService = UserService.getInstance();
+				board.setUser(userService.detailUser(board.getUser()));
+				
+				reqPage = request.getParameter("page");
+				if (reqPage != null) { 
+					page = Integer.parseInt(reqPage);
+				}
+				count = boardService.getCommentCount(); 
+				pagination = new Pagination();
+				pagination.setPage(page);
+				pagination.setCount(count);
+				pagination.init();
+
+				commentlist = boardService.getCommentList(board, pagination);
+				
+				view = "board/aj-comment";
+				request.setAttribute("board", board);
+				request.setAttribute("commentlist", commentlist);
+				break;
 		}
 		
 		RequestDispatcher rd = request.getRequestDispatcher(view+".jsp");
@@ -354,6 +386,7 @@ public class Controller extends HttpServlet {
 				,"/board-reply-process.do"
 				
 				,"/comment-insert.do"
+				,"/aj-insert-comment.do"
 			};
 		
 		for (String item : authList) {
