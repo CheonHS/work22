@@ -69,64 +69,50 @@
 	</tr>
 </table>
 <div class="mainDiv" align="center" style="vertical-align: top; ">
-	<b>댓글 작성</b>
-	<form name="commentInsert" action="comment-insert.do" method="post">
-		<input type="hidden" id="bIdxForm"  name="b_idx" value="${board.b_idx}">
-		<input type="hidden" id="uIdxForm" name="u_idx" value="${sessionScope.user.u_idx}">
-		<textarea id="contentForm" name="c_content" style="width: 800px; height: 50px;"></textarea>
-		<input type="button" id="btnCommentWrite" value="등록" style="height: 50px;">
-	</form>
-	<c:if test="${empty commentlist}"><br><b>댓글이 없습니다</b></c:if>
-	<c:if test="${not empty commentlist}"><br><b>댓글 목록</b></c:if>
-	<div id=commentList>
-		<c:forEach items="${commentlist}" var="c">
-	<div align="left" style="margin-left: 30px;">
-		<c:if test="${c.c_depth ne 0 }">
-			<c:forEach var="var" begin="1" end="${c.c_depth}" step="1">└</c:forEach>
-		</c:if>
-		<b>${c.user.u_name}</b> / 
-		<small><fmt:formatDate value="${c.c_date}" pattern="yyyy-MM-dd HH-mm-ss" type="date"/></small>
-	</div>
-	<div>
-		<c:choose>
-		<c:when test="${sessionScope.user.u_idx eq c.user.u_idx}">
-			<div>
-				<textarea readonly style="width: 700px; height: 50px">${c.c_content}</textarea>
-				<input type="button" value="답글" style="height: 50px;" class="btnReply" cidx="${c.c_idx}">
-				<input type="button" value="수정" style="height: 50px;"
-					id="cEditButton${c.c_idx}" onclick="cEdit(${c.c_idx})">
-				<input type="button" value="삭제" style="height: 50px;"
-					onclick="location.href='/lcomputerstudy/comment-delete.do?c_idx=${c.c_idx}&&b_idx=${c.b_idx}'">
-			</div>
-			<div id="cReplyDiv${c.c_idx}" style="margin-left:30px; display: none;">
-				<form name="commentReply${c.c_idx}" action="comment-reply.do" method="post">
-					<input type="hidden" name="b_idx" value="${c.b_idx}">
-					<input type="hidden" name="u_idx" value="${sessionScope.user.u_idx}">
-					<input type="hidden" name="c_group" value="${c.c_group }">
-					<input type="hidden" name="c_order" value="${c.c_order }">
-					<input type="hidden" name="c_depth" value="${c.c_depth }">
-					<textarea name="c_content" style="width: 750px; height: 50px;"></textarea>
-					<input type="submit" value="답글등록" style="height: 50px;">
-				</form>
-			</div>
-			<div id="cEditDiv${c.c_idx}" style="margin-left:30px; display: none;">
-				<form name="commentReply${c.c_idx}" action="comment-edit.do" method="post">
-					<input type="hidden" name="c_idx" value="${c.c_idx}">
-					<input type="hidden" name="b_idx" value="${c.b_idx}">
-					<textarea name="c_content" style="width: 750px; height: 50px;"></textarea>
-					<input type="submit" value="답글수정" style="height: 50px;">
-				</form>
-			</div>
-		</c:when>
-		<c:when test="${sessionScope.user.u_idx ne c.user.u_idx}">
-			<div>
-				<textarea readonly style="width: 800px; height: 50px">${c.c_content}</textarea>
-			</div>
-		</c:when>
-		</c:choose>
-	</div>
-</c:forEach>
-	</div>
+		<b>댓글 작성</b>
+		<form name="commentInsert" action="comment-insert.do" method="post">
+			<input type="hidden" id="bIdxForm"  name="b_idx" value="${board.b_idx}">
+			<input type="hidden" id="uIdxForm" name="u_idx" value="${sessionScope.user.u_idx}">
+			<textarea id="contentForm" name="c_content" style="width: 800px; height: 50px;"></textarea>
+			<input type="button" id="btnCommentWrite" value="등록" style="height: 50px;">
+		</form>
+		<c:if test="${empty commentlist}"><br><b>댓글이 없습니다</b></c:if>
+		<c:if test="${not empty commentlist}"><br><b>댓글 목록</b></c:if>
+		<div id="commentList">
+		
+			<c:forEach items="${commentlist}" var="c">
+				<div align="left" style="margin-left: 30px; margin-top: 10px;">
+					<c:if test="${c.c_depth ne 0 }">
+						<c:forEach var="var" begin="1" end="${c.c_depth}" step="1">└</c:forEach>
+					</c:if>
+					<b>${c.user.u_name}</b> / 
+					<small><fmt:formatDate value="${c.c_date}" pattern="yyyy-MM-dd HH-mm-ss" type="date"/></small>
+				</div>
+				<div>
+					<div class="cButtonDiv">
+						<textarea readonly style="width: 700px; height: 50px">${c.c_content}</textarea>
+						<input type="button" value="답글" style="height: 50px;" class="btnCommentReply">
+						<input type="button" value="수정" style="height: 50px;" class="btnCommentEdit"
+							uIdx="${c.user.u_idx}">
+						<input type="button" value="삭제" style="height: 50px;" class="btnCommentDel"
+							uIdx="${c.user.u_idx}" cIdx="${c.c_idx}" bIdx="${c.b_idx}">
+					</div>
+					<div class="cReplyDiv" style="margin-left:30px; display: none;">
+						<textarea name="c_content" style="width: 750px; height: 50px;"></textarea>
+						<input type="button" value="등록" style="height: 50px;" class="btnCommentReplyOn"
+							bIdx="${c.b_idx}" uIdx="${sessionScope.user.u_idx}"
+							cGroup="${c.c_group }"	cOrder="${c.c_order }" cDepth="${c.c_depth }">
+						<input type="button" value="취소" style="height: 50px;" class="btnCommentReplyCancel">
+					</div>
+					<div class="cEditDiv" style="margin-left:30px; display: none;">	
+						<input type="button" value="수정" style="height: 50px;" class="btnCommentEditOn"
+							cIdx="${c.c_idx}" bIdx="${c.b_idx}">
+						<input type="button" value="취소" style="height: 50px;" class="btnCommentEditCancel">
+					</div>
+				</div>
+			</c:forEach>
+			
+		</div>
 </div>
 <br>
 <div class="mainDiv" align="right">
@@ -136,34 +122,8 @@
 	<a href="/lcomputerstudy/board-delete.do?b_idx=${board.b_idx}">삭제</a>
 </div>
 </body>
-<script type="text/javascript">
-	function cReply(x){
-		var a = 'cReplyDiv' + x.toString();
-		var b = 'cReplyButton' + x.toString();
-		const t = document.getElementById(a);
-		if(t.style.display !== 'none') {
-		    t.style.display = 'none';
-		    document.getElementById(b).value = '답글';
-		  }
-		  else {
-		    t.style.display = 'block';
-		    document.getElementById(b).value = '취소';
-		  }
-	}
-	function cEdit(x){
-		var a = 'cEditDiv' + x.toString();
-		var b = 'cEditButton' + x.toString();
-		const t = document.getElementById(a);
-		if(t.style.display !== 'none') {
-		    t.style.display = 'none';
-		    document.getElementById(b).value = '수정';
-		  }
-		  else {
-		    t.style.display = 'block';
-		    document.getElementById(b).value = '취소';
-		  }
-	}
-
+<script>
+	
 	$(document).on('click', '#btnCommentWrite', function () {
 		let content = $('#contentForm').val();
 		let bIdx = '${board.b_idx}';
@@ -180,14 +140,115 @@
 		.done(function( msg ) {
 		    $('#commentList').html(msg);
 		});
+	});
+	
+	$(document).on('click', '.btnCommentReply', function () {
+		$(this).parent().next().next().css('display', 'none');
+		let u_idx = '${sessionScope.user.u_idx}';
+		if(u_idx  == ''){
+			alert('로그인이 필요합니다');
+			location.href='/lcomputerstudy/user-login.do';
+		}
+		else{
+			$(this).parent().next().css('display', '');
+		}
+	});
+	
+	$(document).on('click', '.btnCommentReplyOn', function () {
+		let c_content = $(this).prev().val();
+		let u_idx = $(this).attr('uIdx');
+		let b_idx = $(this).attr('bIdx');
+		let c_group = $(this).attr('cGroup');
+		let c_order = $(this).attr('cOrder');
+		let c_depth = $(this).attr('cDepth');
 
+		if(u_idx  == ''){
+			alert('로그인이 필요합니다');
+			location.href='/lcomputerstudy/user-login.do';
+		}else{
+			$.ajax({
+				  method: "POST",
+				  url: "aj-reply-comment.do",
+				  data: { u_idx: u_idx, b_idx: b_idx, c_content: c_content, 
+					  	  c_group: c_group, c_order: c_order, c_depth: c_depth }
+			})
+			.done(function( msg ) {
+			    $('#commentList').html(msg);
+			});
+		}
+	});
+
+	$(document).on('click', '.btnCommentReplyCancel', function() {
+		$(this).parent().css('display', 'none');
+	});
+	
+	$(document).on('click', '.btnCommentEdit', function() {
+		$(this).parent().next().css('display', 'none');
+		let u_idx = $(this).attr('uIdx');
+		let login_idx = '${sessionScope.user.u_idx}';
+		let prev_c = $(this).prev().prev().val();
+
+		if(login_idx  == ''){
+			alert('로그인이 필요합니다');
+			location.href='/lcomputerstudy/user-login.do';
+		}else if(u_idx != login_idx){
+			alert('작성자만 수정 가능합니다');
+			location.reload();
+		}else{
+			
+			$(this).parent().next().next().css('display', '');
+			$(this).prev().prev().val('');
+			$(this).prev().prev().attr('readonly', false);
+			$(this).prev().prev().focus();		
+		}
+		$(document).on('click', '.btnCommentEditCancel', function() {
+			console.log(prev_c);
+			$(this).parent().css('display', 'none');
+			$(this).parent().prev().prev().children('textarea').val(prev_c);
+			$(this).parent().prev().prev().children('textarea').attr('readonly', true);
+		});
+	});
+	
+	$(document).on('click', '.btnCommentEditOn', function() {
+		let c_idx = $(this).attr('cIdx');
+		let b_idx = $(this).attr('bIdx');
+		let c_content = $(this).parent().prev().prev().children('textarea').val();
 		
+		$.ajax({
+			  method: "POST",
+			  url: "aj-edit-comment.do",
+			  data: { c_idx: c_idx, b_idx: b_idx, c_content: c_content }
+		})
+		.done(function( msg ) {
+		    $('#commentList').html(msg);
+		});
 	});
 
-	$(document).on('click', '.btnReply', function () {
-		let c_idx = $(this).attr('cidx');
-		console.log(c_idx);
-		$(this).parent().next().css('display', '');
+	$(document).on('click', '.btnCommentDel', function() {
+		let c_idx = $(this).attr('cIdx');
+		let b_idx = $(this).attr('bIdx');
+		let u_idx = $(this).attr('uIdx');
+		let login_idx = '${sessionScope.user.u_idx}';
+
+		if(login_idx  == ''){
+			alert('로그인이 필요합니다');
+			location.href='/lcomputerstudy/user-login.do';
+		}else if(u_idx != login_idx){
+			alert('작성자만 삭제 가능합니다');
+			location.reload();
+		}else{
+			$.ajax({
+				  method: "POST",
+				  url: "aj-del-comment.do",
+				  data: { c_idx: c_idx, b_idx: b_idx }
+			})
+			.done(function( msg ) {
+			    $('#commentList').html(msg);
+			});
+		}
 	});
+	
+
+	
 </script>
 </html>

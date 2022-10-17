@@ -327,6 +327,8 @@ public class Controller extends HttpServlet {
 				view = "board/comment-result";
 				request.setAttribute("comment", comment);
 				break;
+				
+			/* ajax-comment */
 			case "/aj-insert-comment.do":
 				comment = new Comment();
 				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
@@ -356,7 +358,101 @@ public class Controller extends HttpServlet {
 
 				commentlist = boardService.getCommentList(board, pagination);
 				
-				view = "board/aj-comment";
+				view = "board/aj-comment-list";
+				request.setAttribute("board", board);
+				request.setAttribute("commentlist", commentlist);
+				break;
+			case "/aj-reply-comment.do":
+				comment = new Comment();
+				user = new User();
+				user.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
+				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				comment.setC_content(request.getParameter("c_content"));
+				comment.setUser(user);
+				comment.setC_group(Integer.parseInt(request.getParameter("c_group")));
+				comment.setC_order(Integer.parseInt(request.getParameter("c_order")));
+				comment.setC_depth(Integer.parseInt(request.getParameter("c_depth")));
+				
+				boardService = BoardService.getInstance();
+				boardService.commentReply(comment);
+						
+				board = new Board();
+				board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				board = boardService.detailBoard(board);
+				userService = UserService.getInstance();
+				board.setUser(userService.detailUser(board.getUser()));
+				reqPage = request.getParameter("page");
+				if (reqPage != null) { 
+					page = Integer.parseInt(reqPage);
+				}
+				count = boardService.getCommentCount(); 
+				pagination = new Pagination();
+				pagination.setPage(page);
+				pagination.setCount(count);
+				pagination.init();
+
+				commentlist = boardService.getCommentList(board, pagination);
+				
+				view = "board/aj-comment-list";
+				request.setAttribute("board", board);
+				request.setAttribute("commentlist", commentlist);
+				break;
+			case "/aj-edit-comment.do":
+				comment = new Comment();
+				comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
+				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				comment.setC_content(request.getParameter("c_content"));
+
+				boardService = BoardService.getInstance();
+				boardService.commentEdit(comment);
+				
+				board = new Board();
+				board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				board = boardService.detailBoard(board);
+				userService = UserService.getInstance();
+				board.setUser(userService.detailUser(board.getUser()));
+				reqPage = request.getParameter("page");
+				if (reqPage != null) { 
+					page = Integer.parseInt(reqPage);
+				}
+				count = boardService.getCommentCount(); 
+				pagination = new Pagination();
+				pagination.setPage(page);
+				pagination.setCount(count);
+				pagination.init();
+
+				commentlist = boardService.getCommentList(board, pagination);
+				
+				view = "board/aj-comment-list";
+				request.setAttribute("board", board);
+				request.setAttribute("commentlist", commentlist);
+				break;
+			case "/aj-del-comment.do":
+				comment = new Comment();
+				comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
+				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				
+				boardService = BoardService.getInstance();
+				boardService.commentDelete(comment);
+				
+				board = new Board();
+				board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
+				board = boardService.detailBoard(board);
+				userService = UserService.getInstance();
+				board.setUser(userService.detailUser(board.getUser()));
+				reqPage = request.getParameter("page");
+				if (reqPage != null) { 
+					page = Integer.parseInt(reqPage);
+				}
+				count = boardService.getCommentCount(); 
+				pagination = new Pagination();
+				pagination.setPage(page);
+				pagination.setCount(count);
+				pagination.init();
+
+				commentlist = boardService.getCommentList(board, pagination);
+				
+				view = "board/aj-comment-list";
 				request.setAttribute("board", board);
 				request.setAttribute("commentlist", commentlist);
 				break;
