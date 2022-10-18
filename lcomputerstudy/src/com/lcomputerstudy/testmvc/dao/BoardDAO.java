@@ -36,6 +36,8 @@ public class BoardDAO {
 		ResultSet rs = null;
 		ArrayList<Board> list = null;
 		int pageNum = pagination.getPageNum();
+		int searchType = search.getSearchType();
+		String keyword = "%" + search.getKeyword() + "%";
 		try {
 			conn = DBConnection.getConnection();
 //			String sql = "SELECT 		@ROWNUM := @ROWNUM - 1 AS ROWNUM, ta.* \n"
@@ -43,18 +45,66 @@ public class BoardDAO {
 //					   + "INNER JOIN 	(SELECT @rownum := (SELECT	COUNT(*)-?+1 FROM board ta ORDER BY b_group desc, b_order asc)) tb \n"
 //					   + "ORDER BY b_group desc, b_order asc \n"
 //					   + "LIMIT 		?, ? \n";
-			String sql = "SELECT ROW_NUMBER() OVER(ORDER BY b_group asc, b_order desc) AS ROWNUM, \n"
-					   + "		ta.*				\n"
-					   + "FROM board ta 			\n"
-					   + "ORDER BY ROWNUM desc		\n"
-					   + "LIMIT ?,?					\n";
-	       	pstmt = conn.prepareStatement(sql);
 //	       	pstmt.setInt(1, pageNum);
 //	       	pstmt.setInt(2, pageNum);
 //	       	pstmt.setInt(3, pagination.getPerPage());
-	       	pstmt.setInt(1, pageNum);
-	       	pstmt.setInt(2, pagination.getPerPage());
-
+			
+			String sql = "SELECT ROW_NUMBER() OVER(ORDER BY b_group asc, b_order desc) AS ROWNUM, \n"
+					   + "		ta.*				\n"
+					   + "FROM board ta 			\n";
+			switch (searchType) {
+			
+			case 2:
+				sql += "WHERE b_title LIKE ? 		\n"
+					+  "ORDER BY ROWNUM desc		\n"
+					+  "LIMIT ?,?					\n";
+				System.out.println(sql);
+		       	pstmt = conn.prepareStatement(sql);
+		       	System.out.println(keyword);
+		       	pstmt.setString(1, keyword);
+		       	pstmt.setInt(2, pageNum);
+		       	pstmt.setInt(3, pagination.getPerPage());
+				break;
+			case 3:			
+				sql	+= "WHERE b_content LIKE ?		\n"
+				    +  "ORDER BY ROWNUM desc		\n"
+				    +  "LIMIT ?,?					\n";
+		       	pstmt = conn.prepareStatement(sql);
+		       	pstmt.setString(1, keyword);
+		       	pstmt.setInt(2, pageNum);
+		       	pstmt.setInt(3, pagination.getPerPage());
+				break;
+			case 4:			
+				sql	+= "WHERE b_title LIKE ?		\n"
+					+  "OR    b_content LIKE ? 		\n"	
+					+  "ORDER BY ROWNUM desc		\n"
+					+  "LIMIT ?,?					\n";	
+		       	pstmt = conn.prepareStatement(sql);
+		       	pstmt.setString(1, keyword);
+		       	pstmt.setString(2, keyword);
+		       	pstmt.setInt(3, pageNum);
+		       	pstmt.setInt(4, pagination.getPerPage());
+				break;
+			case 5:			
+				sql += "INNER JOIN user tb	 		\n"
+					+  "ON ta.u_idx = tb.u_idx		\n"
+					+  "WHERE tb.u_name LIKE ?		\n"
+					+  "ORDER BY ROWNUM desc		\n"
+				    +  "LIMIT ?,?					\n";
+		       	pstmt = conn.prepareStatement(sql);
+		       	pstmt.setString(1, keyword);
+		       	pstmt.setInt(2, pageNum);
+		       	pstmt.setInt(3, pagination.getPerPage());
+				break;
+			default:
+				sql += "ORDER BY ROWNUM desc		\n"
+				    +  "LIMIT ?,?					\n";
+		       	pstmt = conn.prepareStatement(sql);
+		       	pstmt.setInt(1, pageNum);
+		       	pstmt.setInt(2, pagination.getPerPage());
+				break;
+			}
+				
 	        rs = pstmt.executeQuery();
 	        list = new ArrayList<Board>();
 

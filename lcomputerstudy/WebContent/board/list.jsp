@@ -41,7 +41,6 @@
 		margin-right: 5px;
 	}
 	div{
-		border : 1px solid black;
 		height: 30px;
 	}
 	.row{
@@ -54,7 +53,9 @@
 </style>
 </head>
 <body>
-<h1 align="center">게시판 목록</h1>
+<h1 align="center">
+	<a href="/lcomputerstudy/board-list.do">게시판 목록</a>
+</h1>
 	<div style="width:700px; height: 200px; margin-left: auto; margin-right: auto;">
 		<table>
 			<tr>
@@ -124,7 +125,7 @@
 		</ul>
 	</div>
 	<div style="width: 700px; margin-left: auto; margin-right: auto; text-align: right;">
-		<a href="/lcomputerstudy/board-write.do?u_idx=${user.u_idx}">글 등록</a>
+		<input type="button" value="글 작성" onclick="location.href='/lcomputerstudy/board-write.do?u_idx=${user.u_idx}'"/>
 	</div>
 	<div style="width: 700px; margin-left: auto; margin-right: auto; text-align: right;">
 		<form action="board-list.do" method="get">
@@ -134,7 +135,6 @@
 				<option value="3">내용</option>
 				<option value="4">제목+내용</option>
 				<option value="5">작성자</option>
-				
 			</select>
 			<input type="search" name="keyword"/>
 			<input type="submit" value="검색"/>
