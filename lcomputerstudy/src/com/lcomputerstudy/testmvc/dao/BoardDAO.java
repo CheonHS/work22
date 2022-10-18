@@ -13,6 +13,7 @@ import com.lcomputerstudy.testmvc.service.UserService;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.vo.Pagination;
+import com.lcomputerstudy.testmvc.vo.Search;
 import com.lcomputerstudy.testmvc.vo.User;
 
 public class BoardDAO {
@@ -29,7 +30,7 @@ public class BoardDAO {
 		return dao;
 	}
 	
-	public ArrayList<Board> getBoardList(Pagination pagination) {
+	public ArrayList<Board> getBoardList(Pagination pagination, Search search) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -48,8 +49,12 @@ public class BoardDAO {
 					   + "ORDER BY ROWNUM desc		\n"
 					   + "LIMIT ?,?					\n";
 	       	pstmt = conn.prepareStatement(sql);
+//	       	pstmt.setInt(1, pageNum);
+//	       	pstmt.setInt(2, pageNum);
+//	       	pstmt.setInt(3, pagination.getPerPage());
 	       	pstmt.setInt(1, pageNum);
 	       	pstmt.setInt(2, pagination.getPerPage());
+
 	        rs = pstmt.executeQuery();
 	        list = new ArrayList<Board>();
 
@@ -77,9 +82,9 @@ public class BoardDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
+				if(rs!=null) rs.close();
+				if(pstmt!=null) pstmt.close();
+				if(conn!=null) conn.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

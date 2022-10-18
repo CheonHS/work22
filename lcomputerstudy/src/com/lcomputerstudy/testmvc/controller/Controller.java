@@ -15,6 +15,7 @@ import com.lcomputerstudy.testmvc.service.UserService;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.vo.Pagination;
+import com.lcomputerstudy.testmvc.vo.Search;
 import com.lcomputerstudy.testmvc.vo.User;
 
 @WebServlet("*.do")
@@ -160,18 +161,30 @@ public class Controller extends HttpServlet {
 				pagination.setPage(page);
 				pagination.setCount(count);
 				pagination.init();
-				ArrayList<Board> boardlist = boardService.getBoardList(pagination);
+				
+				Search search = new Search();
+				if(request.getParameter("searchType")!=null) {
+					search.setSearchType(Integer.parseInt(request.getParameter("searchType")));
+				}else {
+					search.setSearchType(1);
+				}
+				search.setKeyword(request.getParameter("keyword"));
+
+				ArrayList<Board> boardlist=null;
+				boardlist = boardService.getBoardList(pagination, search);
+				
 				for(Board i : boardlist) {
 					user = i.getUser();
 					userService = UserService.getInstance();
 					user = userService.detailUser(user);
 					i.setUser(user);
 				}
+
 				view = "board/list";
 				request.setAttribute("boardlist", boardlist);
 				request.setAttribute("pagination", pagination);
-				
 				break;
+				
 			case "/board-write.do":
 				user = new User();
 				user.setU_idx(Integer.parseInt(request.getParameter("u_idx")));

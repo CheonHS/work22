@@ -5,6 +5,7 @@ import com.lcomputerstudy.testmvc.dao.BoardDAO;
 import com.lcomputerstudy.testmvc.vo.Board;
 import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.vo.Pagination;
+import com.lcomputerstudy.testmvc.vo.Search;
 
 
 public class BoardService {
@@ -23,8 +24,8 @@ public class BoardService {
 		return service;
 	}
 
-	public ArrayList<Board> getBoardList(Pagination pagination) {
-		return dao.getBoardList(pagination);
+	public ArrayList<Board> getBoardList(Pagination pagination, Search search) {
+		return dao.getBoardList(pagination, search);
 	}
 	
 	public void writeBoard(Board board) {
