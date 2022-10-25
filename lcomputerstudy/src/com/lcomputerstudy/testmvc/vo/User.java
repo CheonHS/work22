@@ -10,6 +10,7 @@ public class User {
 	private String[] arrTel;
 	private String u_age;
 	private int rownum;
+	private int u_level;
 	
 	public int getU_idx() {
 		return u_idx;
@@ -58,5 +59,11 @@ public class User {
 	}
 	public void setRownum(int rownum) {
 		this.rownum = rownum;
+	}
+	public int getU_level() {
+		return u_level;
+	}
+	public void setU_level(int u_level) {
+		this.u_level = u_level;
 	}
 }

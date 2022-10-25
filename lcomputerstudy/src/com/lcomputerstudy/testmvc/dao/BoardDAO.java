@@ -30,12 +30,13 @@ public class BoardDAO {
 		return dao;
 	}
 	
-	public ArrayList<Board> getBoardList(Pagination pagination, Search search) {
+	public ArrayList<Board> getBoardList(Pagination pagination) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		ArrayList<Board> list = null;
 		int pageNum = pagination.getPageNum();
+		Search search = pagination.getSearch();
 		int searchType = search.getSearchType();
 		String keyword = "%" + search.getKeyword() + "%";
 		try {
@@ -58,9 +59,7 @@ public class BoardDAO {
 				sql += "WHERE b_title LIKE ? 		\n"
 					+  "ORDER BY ROWNUM desc		\n"
 					+  "LIMIT ?,?					\n";
-				System.out.println(sql);
 		       	pstmt = conn.prepareStatement(sql);
-		       	System.out.println(keyword);
 		       	pstmt.setString(1, keyword);
 		       	pstmt.setInt(2, pageNum);
 		       	pstmt.setInt(3, pagination.getPerPage());
@@ -286,16 +285,33 @@ public class BoardDAO {
 		
 	}
 
-	public int getBoardCount() {
+	public int getBoardCount(Search search) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		int count = 0;
+		int type = search.getSearchType();
+		String keyword = search.getKeyword();
 		
 		try {
 			conn = DBConnection.getConnection();
-			String sql = "select count(*) count from board";
+			String sql = "select count(*) count from board ta	\n";
+			if(type==2) {
+				sql += "WHERE b_title = ?	\n";
+			}else if(type==3) {
+				sql += "WHERE b_content = ?	\n";
+			}else if(type==4) {
+				sql += "WHERE b_title = ? OR b_content = ?	\n";
+			}else if(type==5) {
+				sql += "INNER JOIN user tb	 		\n"
+					+  "ON ta.u_idx = tb.u_idx		\n"
+					+  "WHERE tb.u_name LIKE ?		\n";
+			}
 	       	pstmt = conn.prepareStatement(sql);
+	       	if(type!=1)
+	       		pstmt.setString(1, keyword);
+	       	if(type==4)
+	       		pstmt.setString(2, keyword);
 	        rs = pstmt.executeQuery();
 
 	        while(rs.next()){     

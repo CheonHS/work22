@@ -24,8 +24,8 @@ public class BoardService {
 		return service;
 	}
 
-	public ArrayList<Board> getBoardList(Pagination pagination, Search search) {
-		return dao.getBoardList(pagination, search);
+	public ArrayList<Board> getBoardList(Pagination pagination) {
+		return dao.getBoardList(pagination);
 	}
 	
 	public void writeBoard(Board board) {
@@ -47,8 +47,8 @@ public class BoardService {
 		
 	}
 
-	public int getBoardsCount() {
-		return dao.getBoardCount();
+	public int getBoardsCount(Search search) {
+		return dao.getBoardCount(search);
 	}
 
 	public Board replyBoard(Board board) {

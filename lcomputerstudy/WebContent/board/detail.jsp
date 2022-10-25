@@ -117,9 +117,13 @@
 <br>
 <div class="mainDiv" align="right">
 	<a href="/lcomputerstudy/board-list.do">목록</a>
-	<a href="/lcomputerstudy/board-edit.do?b_idx=${board.b_idx}">수정</a>
+	<c:if test="${board.user.u_idx eq sessionScope.user.u_idx}">
+		<a href="/lcomputerstudy/board-edit.do?b_idx=${board.b_idx}">수정</a>
+	</c:if>
 	<a href="/lcomputerstudy/board-reply.do?b_idx=${board.b_idx}">답글</a>
-	<a href="/lcomputerstudy/board-delete.do?b_idx=${board.b_idx}">삭제</a>
+	<c:if test="${board.user.u_idx eq sessionScope.user.u_idx || sessionScope.user.u_level eq 9}">
+		<a href="/lcomputerstudy/board-delete.do?b_idx=${board.b_idx}">삭제</a>
+	</c:if>
 </div>
 </body>
 <script>

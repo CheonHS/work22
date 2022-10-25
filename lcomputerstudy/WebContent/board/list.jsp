@@ -90,7 +90,8 @@
 			</c:when>
 			<c:when test="${ pagination.prevPage ge 5}">
 				<li>
-					<a href="board-list.do?page=${pagination.prevPage}">
+					<a href="board-list.do?page=${pagination.prevPage}
+					&searchType=${search.searchType}&keyword=${search.keyword}">
 						◀
 					</a>
 				</li>
@@ -105,7 +106,8 @@
 					</c:when>
 					<c:when test="${ pagination.page ne i }">
 						<li>
-							<a href="board-list.do?page=${i}">${i}</a>
+							<a href="board-list.do?page=${i}
+							&searchType=${search.searchType}&keyword=${search.keyword}">${i}</a>
 						</li>
 					</c:when>
 				</c:choose>
@@ -113,18 +115,21 @@
 			<c:choose>
 				<c:when test="${ pagination.nextPage le pagination.lastPage }">
 					<li style="">
-						<a href="board-list.do?page=${pagination.nextPage}">▶</a>
+						<a href="board-list.do?page=${pagination.nextPage}
+						&searchType=${search.searchType}&keyword=${search.keyword}">▶</a>
 					</li>
 				</c:when>
 				<c:when test="${ pagination.nextPage ge pagination.lastPage}">
 					<li style="display:none;">
-						<a href="board-list.do?page=${pagination.nextPage}">▶</a>
+						<a href="board-list.do?page=${pagination.nextPage}
+						&searchType=${search.searchType}&keyword=${search.keyword}">▶</a>
 					</li>
 				</c:when>
 			</c:choose> 
 		</ul>
 	</div>
 	<div style="width: 700px; margin-left: auto; margin-right: auto; text-align: right;">
+		<input type="button" value="회원정보" onclick="location.href='/lcomputerstudy/login-view.do'"/>
 		<input type="button" value="글 작성" onclick="location.href='/lcomputerstudy/board-write.do?u_idx=${user.u_idx}'"/>
 	</div>
 	<div style="width: 700px; margin-left: auto; margin-right: auto; text-align: right;">

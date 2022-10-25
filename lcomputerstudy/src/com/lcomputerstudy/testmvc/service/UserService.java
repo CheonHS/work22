@@ -46,4 +46,9 @@ public class UserService {
 	public User loginUser(String idx, String pw) {
 		return dao.loginUser(idx,pw);
 	}
+
+	public void setUserLevel(User user) {
+		dao.setUserLevel(user);
+		
+	}
 }

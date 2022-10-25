@@ -43,22 +43,47 @@
 		margin:0 5px;
 		border-radius:5px;
 	}
+	.half{
+		border:1px solid #818181;
+		width:100px;
+		text-align:center;
+	}
 </style>
 <body>
 <h1>회원 목록</h1>
 	<table >
 		<tr>
-			<td colspan="3">전체 회원 수 : ${pagination.count}</td>
+			<td colspan="5">전체 회원 수 : ${pagination.count}</td>
 		<tr>
 			<th>No</th>
 			<th>ID</th>
 			<th>이름</th>
+			<th class="half">등급</th>
+			<th>권한</th>
 		</tr>
 		<c:forEach items="${list}" var="item" varStatus="status">
-		 <tr onclick="location.href='/lcomputerstudy/user-detail.do?u_idx=${item.u_idx}'">
-			<td>${item.rownum}</td>
+		 <tr>
+			<td><a href="user-detail.do?u_idx=${item.u_idx}">${item.rownum}</a></td>
 			<td>${item.u_id}</td>
 			<td>${item.u_name}</td>
+			<td class="half">
+				<c:choose>
+					<c:when test="${item.u_level eq 0}">미정</c:when>
+					<c:when test="${item.u_level eq 1}">회원</c:when>
+					<c:when test="${item.u_level eq 9}">관리자</c:when>
+				</c:choose>
+			</td>
+			<td>
+				<form action="user-level.do" method="post">
+					<input type="hidden" name="u_idx" value="${item.u_idx}">
+					<select name="u_level">
+						<option value="" selected disabled hidden=""></option>
+						<option value="1">회원</option>
+						<option value="9">관리자</option>
+					</select>
+					<input type="submit" value="변경">
+				</form>
+			</td>
 	     <tr>
 		</c:forEach>
 	</table>
@@ -110,6 +135,9 @@
 				<a href="user-list.do?page=${pagination.nextPage}">▶</a>
 			</li>  --%>
 		</ul>
+	</div>
+	<div style="width:800px; text-align: right;">
+		<input type="button" value="회원정보" onclick="location.href='/lcomputerstudy/login-view.do'"/>
 	</div>
 </body>
 </html>

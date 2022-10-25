@@ -12,6 +12,8 @@ public class Pagination {
 	public static final int pageUnit=5;  // 한번에 불러 올 pagination 수
 	public static final int perPage=5;   // 한번에 불러 올 userCount 수
 	
+	Search search;
+	
 	public Pagination() {
 	}
 	
@@ -78,6 +80,12 @@ public class Pagination {
 	}
 	public void setNextPage(int nextPage) {
 		this.nextPage = nextPage;
+	}
+	public Search getSearch() {
+		return search;
+	}
+	public void setSearch(Search search) {
+		this.search = search;
 	}
 	
 }

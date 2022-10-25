@@ -118,7 +118,14 @@ public class Controller extends HttpServlet {
 				userService.deleteUser(user);
 				view = "user/delete-result";
 				break;
-				
+			case "/user-level.do":
+				user = new User();
+				user.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
+				user.setU_level(Integer.parseInt(request.getParameter("u_level")));
+				userService = UserService.getInstance();
+				userService.setUserLevel(user);
+				response.sendRedirect("www.naver.com");
+				break;
 			/* login */
 			case "/user-login.do":
 				view = "user/login";
@@ -147,31 +154,37 @@ public class Controller extends HttpServlet {
 			case "/access-denied.do":
 				view = "user/access-denied";
 				break;
-
+			case "/login-view.do":
+				session = request.getSession();
+				user = (User) session.getAttribute("user");
+				session.setAttribute("user", user);
+				view = "user/login-result";
+				break;
 				
 			/* board */	
 			case "/board-list.do":
-				reqPage = request.getParameter("page");
-				if (reqPage != null) { 
-					page = Integer.parseInt(reqPage);
-				}
-				BoardService boardService = BoardService.getInstance();
-				count = boardService.getBoardsCount();
-				pagination = new Pagination();
-				pagination.setPage(page);
-				pagination.setCount(count);
-				pagination.init();
-				
 				Search search = new Search();
-				if(request.getParameter("searchType")!=null) {
+				if(request.getParameter("searchType")!=null&&request.getParameter("searchType")!="") {
 					search.setSearchType(Integer.parseInt(request.getParameter("searchType")));
 				}else {
 					search.setSearchType(1);
 				}
 				search.setKeyword(request.getParameter("keyword"));
-
+				
+				reqPage = request.getParameter("page");
+				if (reqPage != null) { 
+					page = Integer.parseInt(reqPage);
+				}
+				BoardService boardService = BoardService.getInstance();
+				count = boardService.getBoardsCount(search);
+				pagination = new Pagination();
+				pagination.setPage(page);
+				pagination.setCount(count);
+				pagination.init();
+				pagination.setSearch(search);
+				
 				ArrayList<Board> boardlist=null;
-				boardlist = boardService.getBoardList(pagination, search);
+				boardlist = boardService.getBoardList(pagination);
 				
 				for(Board i : boardlist) {
 					user = i.getUser();
@@ -181,6 +194,7 @@ public class Controller extends HttpServlet {
 				}
 
 				view = "board/list";
+				request.setAttribute("search", search);
 				request.setAttribute("boardlist", boardlist);
 				request.setAttribute("pagination", pagination);
 				break;
@@ -485,6 +499,7 @@ public class Controller extends HttpServlet {
 				,"/user-edit.do"
 				,"/user-edit-process.do"
 				,"/logout.do"
+				,"/login-view.do"
 				
 				,"/board-write.do"
 				,"/board-write-process.do"
