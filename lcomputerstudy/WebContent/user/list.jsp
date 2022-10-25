@@ -6,7 +6,6 @@
 <head>
 <meta charset="UTF-8">
 <title>회원목록2</title>
-</head>
 <style>
 	h1 {
 		text-align:center;
@@ -49,8 +48,11 @@
 		text-align:center;
 	}
 </style>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <body>
 <h1>회원 목록</h1>
+<div id="userList">
 	<table >
 		<tr>
 			<td colspan="5">전체 회원 수 : ${pagination.count}</td>
@@ -74,15 +76,13 @@
 				</c:choose>
 			</td>
 			<td>
-				<form action="user-level.do" method="post">
-					<input type="hidden" name="u_idx" value="${item.u_idx}">
-					<select name="u_level">
-						<option value="" selected disabled hidden=""></option>
-						<option value="1">회원</option>
-						<option value="9">관리자</option>
-					</select>
-					<input type="submit" value="변경">
-				</form>
+				<input type="hidden" name="u_idx" value="${item.u_idx}">
+				<select name="u_level">
+					<option value="" selected disabled hidden=""></option>
+					<option value="1">회원</option>
+					<option value="9">관리자</option>
+				</select>
+				<input type="button" value="변경" class="btnLevel">
 			</td>
 	     <tr>
 		</c:forEach>
@@ -136,8 +136,34 @@
 			</li>  --%>
 		</ul>
 	</div>
+</div>	
 	<div style="width:800px; text-align: right;">
 		<input type="button" value="회원정보" onclick="location.href='/lcomputerstudy/login-view.do'"/>
 	</div>
 </body>
+<script>
+$(document).on('click', '.btnLevel', function() {
+	let u_idx = $(this).prev().prev().val();
+	let u_level = $(this).prev().val();
+	let page = ${pagination.page};
+
+	
+	console.log(u_idx);
+	console.log(u_level);
+	
+	$.ajax({
+		  method: "POST",
+		  url: "user-level.do",
+		  data: { u_idx: u_idx, u_level: u_level, page: page }
+	})
+	.done(function( msg ) {
+	    $('#userList').html(msg);
+	});
+	if(${sessionScope.user.u_idx == u_idx}){
+		
+	}
+	console.log(${sessionScope.user.u_idx});
+	console.log(${sessionScope.user.u_level});
+});
+</script>
 </html>

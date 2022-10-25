@@ -124,7 +124,24 @@ public class Controller extends HttpServlet {
 				user.setU_level(Integer.parseInt(request.getParameter("u_level")));
 				userService = UserService.getInstance();
 				userService.setUserLevel(user);
-				response.sendRedirect("www.naver.com");
+				
+				reqPage = request.getParameter("page");
+				if (reqPage != null) { 
+					page = Integer.parseInt(reqPage);
+				}
+				userService = UserService.getInstance();
+				count = userService.getUsersCount();
+				
+				pagination = new Pagination();
+				pagination.setPage(page);
+				pagination.setCount(count);
+				pagination.init();
+				
+				list = userService.getUsers(pagination);
+				
+				view = "user/aj-user-list";
+				request.setAttribute("list", list);
+				request.setAttribute("pagination", pagination);
 				break;
 			/* login */
 			case "/user-login.do":
