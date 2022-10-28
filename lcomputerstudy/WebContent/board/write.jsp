@@ -32,18 +32,16 @@
 <body>
 <div>
 <h2> 글 작성 </h2>
-<form action="board-write-process.do" name="boardwrite" method="post">
+<form action="board-write-process.do" name="boardwrite" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="u_idx" value="${user.u_idx}">
-	<p>
-		<input type="text" name="title" placeholder="글 제목" class="title">
-	</p>
+	<p><input type="text" name="title" placeholder="글 제목" class="title"></p>
 	<p><textarea name="content" placeholder="내용"></textarea></p>
+	<p><input type="file" name="b_filename" style="border: 1px solid black; width: 460px; height: 25px;"></p>
 	<p>
 		<input type="button" value="돌아가기"
 			   onclick="location.href='/lcomputerstudy/board-list.do'">
 		<input type="submit" value="작성">
 	</p>
-
 </form>
 </div>
 </body>

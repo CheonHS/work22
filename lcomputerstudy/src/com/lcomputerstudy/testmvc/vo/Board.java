@@ -16,6 +16,8 @@ public class Board {
 	private int b_order;
 	private int b_depth;
 	
+	private String b_filename;
+	
 	public int getB_idx() {
 		return b_idx;
 	}
@@ -75,6 +77,12 @@ public class Board {
 	}
 	public void setB_depth(int b_depth) {
 		this.b_depth = b_depth;
+	}
+	public String getB_filename() {
+		return b_filename;
+	}
+	public void setB_filename(String b_filename) {
+		this.b_filename = b_filename;
 	}
 
 }

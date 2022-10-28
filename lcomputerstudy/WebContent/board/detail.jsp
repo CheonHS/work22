@@ -136,6 +136,11 @@
 		console.log(bIdx);
 		console.log(uIdx);
 
+		if(uIdx==''){
+			alert("로그인이 필요합니다");
+			location.href='/lcomputerstudy/user-login.do';
+		}
+		
 		$.ajax({
 			  method: "POST",
 			  url: "aj-insert-comment.do",

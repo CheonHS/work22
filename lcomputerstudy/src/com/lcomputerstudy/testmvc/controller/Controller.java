@@ -2,6 +2,8 @@ package com.lcomputerstudy.testmvc.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +19,7 @@ import com.lcomputerstudy.testmvc.vo.Comment;
 import com.lcomputerstudy.testmvc.vo.Pagination;
 import com.lcomputerstudy.testmvc.vo.Search;
 import com.lcomputerstudy.testmvc.vo.User;
+import com.oreilly.servlet.MultipartRequest;
 
 @WebServlet("*.do")
 public class Controller extends HttpServlet {
@@ -29,10 +32,13 @@ public class Controller extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html; charset=utf-8");
 
-		String requestURI = request.getRequestURI();
-		String contextPath = request.getContextPath();
+		String requestURI = request.getRequestURI();	//	/lcomputerstudy/*.do
+		String contextPath = request.getContextPath();	//	/lcomputerstudy
 		String command = requestURI.substring(contextPath.length());
 		String view = null;
+		
+		System.out.println(requestURI);
+		System.out.println(contextPath);
 		
 		int count = 0;
 		int page = 1;
@@ -269,7 +275,7 @@ public class Controller extends HttpServlet {
 				view = "board/edit";
 				request.setAttribute("board", board);
 				if(board.getUser().getU_idx()!=user.getU_idx()) {
-					view = "user/login";
+					view = "board/board-access-denied";
 				}
 				break;
 			case "/board-edit-process.do":
@@ -287,9 +293,19 @@ public class Controller extends HttpServlet {
 				board = new Board();
 				board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
 				boardService = BoardService.getInstance();
+				
+				session = request.getSession();
+				User loginUser = (User) session.getAttribute("user");
+				User boardUser = boardService.detailBoard(board).getUser();
+				if(loginUser.getU_idx()!=boardUser.getU_idx()) {
+					view = "board/board-access-denied";
+					break;
+				}
+				
 				boardService.deleteBoard(board);
-				view = "board/delete-result";
+				view = "board/delete-result";							
 				break;	
+				
 			case "/board-reply.do":
 				board = new Board();
 				board.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
@@ -349,6 +365,9 @@ public class Controller extends HttpServlet {
 				request.setAttribute("comment", comment);
 				break;
 			case "/comment-edit.do":
+				session = request.getSession();
+				loginUser = (User) session.getAttribute("user");
+				
 				comment = new Comment();
 				comment.setC_idx(Integer.parseInt(request.getParameter("c_idx")));
 				comment.setB_idx(Integer.parseInt(request.getParameter("b_idx")));
