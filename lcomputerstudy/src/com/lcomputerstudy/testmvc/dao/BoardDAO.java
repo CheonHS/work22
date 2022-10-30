@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-
 import com.lcomputerstudy.testmvc.database.DBConnection;
 import com.lcomputerstudy.testmvc.service.UserService;
 import com.lcomputerstudy.testmvc.vo.Board;
@@ -125,6 +124,7 @@ public class BoardDAO {
 	        	board.setB_group(rs.getInt("b_group"));
 	        	board.setB_order(rs.getInt("b_order"));
 	        	board.setB_depth(rs.getInt("b_depth"));
+	        	board.setB_filename(rs.getString("b_filename"));
        	       	list.add(board);
 	        }
 		} catch (Exception e) {
@@ -149,7 +149,9 @@ public class BoardDAO {
 		
 		try {
 			conn = DBConnection.getConnection();
-			String sql = "insert into board (b_title, b_content, b_date, u_idx, b_group, b_order, b_depth) values (?,?,now(),?,?,?,?)";
+			String sql = "insert into board (b_title, b_content, b_date, u_idx, "
+					+ " b_group, b_order, b_depth, b_filename)		\n"
+					+ " values (?,?,now(),?,?,?,?,?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, board.getB_title());
 			pstmt.setString(2, board.getB_content());
@@ -158,6 +160,7 @@ public class BoardDAO {
 			pstmt.setInt(4, 0);
 			pstmt.setInt(5, 1);
 			pstmt.setInt(6, 0);
+			pstmt.setString(7, board.getB_filename());
 			pstmt.executeUpdate();
 		}catch (Exception ex) {
 			ex.printStackTrace();
@@ -205,6 +208,7 @@ public class BoardDAO {
 	        	row.setB_group(rs.getInt("b_group"));
 	        	row.setB_order(rs.getInt("b_order"));
 	        	row.setB_depth(rs.getInt("b_depth"));
+	        	row.setB_filename(rs.getString("b_filename"));
 	        }
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -60,6 +60,18 @@
 			${board.b_content}
 		</td>
 	</tr>
+	<c:if test="${board.b_filename ne ''}">
+		<tr>
+			<td valign="top">
+				<p>파일명</p>
+				<h2>${board.b_filename}</h2>
+			</td>
+			<td colspan="3" height="150px">
+				<img id="boardImg" src="/lcomputerstudy/fileupload/${board.b_filename}"
+					style="width: 100px; height:100px;">
+			</td>
+		</tr>
+	</c:if>
 	<tr>
 		<th>조회수</th>
 		<td>${board.b_views}</td>
@@ -127,7 +139,6 @@
 </div>
 </body>
 <script>
-	
 	$(document).on('click', '#btnCommentWrite', function () {
 		let content = $('#contentForm').val();
 		let bIdx = '${board.b_idx}';

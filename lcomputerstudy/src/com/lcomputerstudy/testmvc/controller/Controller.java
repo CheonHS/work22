@@ -2,8 +2,6 @@ package com.lcomputerstudy.testmvc.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +18,7 @@ import com.lcomputerstudy.testmvc.vo.Pagination;
 import com.lcomputerstudy.testmvc.vo.Search;
 import com.lcomputerstudy.testmvc.vo.User;
 import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 @WebServlet("*.do")
 public class Controller extends HttpServlet {
@@ -36,9 +35,6 @@ public class Controller extends HttpServlet {
 		String contextPath = request.getContextPath();	//	/lcomputerstudy
 		String command = requestURI.substring(contextPath.length());
 		String view = null;
-		
-		System.out.println(requestURI);
-		System.out.println(contextPath);
 		
 		int count = 0;
 		int page = 1;
@@ -229,16 +225,22 @@ public class Controller extends HttpServlet {
 				request.setAttribute("user", user);
 				break;
 			case "/board-write-process.do":
+				MultipartRequest multi = fileUpload(request);
 				user = new User();
-				user.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
+//				user.setU_idx(Integer.parseInt(request.getParameter("u_idx")));
+				user.setU_idx(Integer.parseInt(multi.getParameter("u_idx")));
 				
 				Board board = new Board();
-				board.setB_title(request.getParameter("title"));
-				board.setB_content(request.getParameter("content"));
+//				board.setB_title(request.getParameter("title"));
+//				board.setB_content(request.getParameter("content"));
+				board.setB_title(multi.getParameter("title"));
+				board.setB_content(multi.getParameter("content"));
+				board.setB_filename(multi.getFilesystemName("filename"));
 				board.setUser(user);
 				
 				boardService = BoardService.getInstance();
 				boardService.writeBoard(board);
+				
 				view = "board/write-result";
 				break;
 			case "/board-detail.do":
@@ -558,4 +560,22 @@ public class Controller extends HttpServlet {
 		}
 		return command;
 	}
+	MultipartRequest fileUpload(HttpServletRequest request) {
+		String path = request.getServletContext().getRealPath("/fileupload");
+		System.out.println(path);
+		
+		int size = 1024 * 1024 * 80;
+		MultipartRequest multi = null;
+		try {
+			multi = new MultipartRequest(
+					request, path, size, "UTF-8",
+					new DefaultFileRenamePolicy()
+				);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return multi;
+	}
+	
 }

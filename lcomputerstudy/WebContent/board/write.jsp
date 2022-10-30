@@ -36,7 +36,7 @@
 	<input type="hidden" name="u_idx" value="${user.u_idx}">
 	<p><input type="text" name="title" placeholder="글 제목" class="title"></p>
 	<p><textarea name="content" placeholder="내용"></textarea></p>
-	<p><input type="file" name="b_filename" style="border: 1px solid black; width: 460px; height: 25px;"></p>
+	<p><input type="file" name="filename" style="border: 1px solid black; width: 460px; height: 25px;"></p>
 	<p>
 		<input type="button" value="돌아가기"
 			   onclick="location.href='/lcomputerstudy/board-list.do'">
