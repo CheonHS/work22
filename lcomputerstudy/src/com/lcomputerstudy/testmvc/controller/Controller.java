@@ -231,12 +231,16 @@ public class Controller extends HttpServlet {
 				user.setU_idx(Integer.parseInt(multi.getParameter("u_idx")));
 				
 				Board board = new Board();
+				board.setUser(user);
 //				board.setB_title(request.getParameter("title"));
 //				board.setB_content(request.getParameter("content"));
 				board.setB_title(multi.getParameter("title"));
 				board.setB_content(multi.getParameter("content"));
-				board.setB_filename(multi.getFilesystemName("filename"));
-				board.setUser(user);
+				if(multi.getFilesystemName("filename")!=null) {
+					board.setB_filename(multi.getFilesystemName("filename"));
+				}else {
+					board.setB_filename("");
+				}
 				
 				boardService = BoardService.getInstance();
 				boardService.writeBoard(board);
@@ -562,7 +566,7 @@ public class Controller extends HttpServlet {
 	}
 	MultipartRequest fileUpload(HttpServletRequest request) {
 		String path = request.getServletContext().getRealPath("/fileupload");
-		System.out.println(path);
+//		System.out.println(path);
 		
 		int size = 1024 * 1024 * 80;
 		MultipartRequest multi = null;
